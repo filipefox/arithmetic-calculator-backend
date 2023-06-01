@@ -7,18 +7,21 @@ import { Operation } from "./operation/operation.entity";
 import { DataSource } from "typeorm";
 import { OperationService } from "./operation/operation.service";
 import { OperationModule } from "./operation/operation.module";
-import { UserModule } from "./user/user.module";
+import { UserModule } from './user/user.module';
 import { RecordModule } from "./record/record.module";
+import { ConfigModule } from "@nestjs/config";
+import * as process from "process";
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'postgres',
-      database: 'postgres',
+      host: process.env.PGHOST,
+      port: Number(process.env.PGPORT),
+      username: process.env.PGUSER,
+      password: process.env.PGPASSWORD,
+      database: process.env.PGDATABASE,
       entities: [Operation],
       synchronize: true,
     }),
