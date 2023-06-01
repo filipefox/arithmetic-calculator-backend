@@ -1,11 +1,9 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { OperationController } from './operation/operation.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Operation } from './operation/operation.entity';
 import { DataSource } from 'typeorm';
-import { OperationService } from './operation/operation.service';
 import { OperationModule } from './operation/operation.module';
 import { UserModule } from './user/user.module';
 import { RecordModule } from './record/record.module';
@@ -14,7 +12,7 @@ import * as process from 'process';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ envFilePath: ['.env', '.env.local'] }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.PGHOST,
@@ -23,7 +21,7 @@ import * as process from 'process';
       password: process.env.PGPASSWORD,
       database: process.env.PGDATABASE,
       entities: [Operation],
-      synchronize: true,
+      synchronize: Boolean(process.env.TYPE_ORM_SYNCHRONIZE),
     }),
     OperationModule,
     UserModule,
