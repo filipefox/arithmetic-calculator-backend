@@ -1,7 +1,7 @@
-import { UserType } from './user.entity';
+import { UserStatus } from './user.entity';
 
 export class UserResponse {
   number1: number;
   number2: number;
-  type: UserType;
+  type: UserStatus;
 }

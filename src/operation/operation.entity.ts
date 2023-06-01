@@ -1,12 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Operation {
-  constructor(type: OperationType, cost: number) {
-    this.type = type;
-    this.cost = cost;
-  }
-
   @PrimaryGeneratedColumn()
   id: number;
 

@@ -2,28 +2,122 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Operation, OperationType } from './operation.entity';
+import {
+  OperationRequest,
+  SquareRootOperationRequest,
+} from './operation.request.dto';
+import { Record } from '../record/record.entity';
+import { User } from '../user/user.entity';
+import { RecordService } from '../record/record.service';
+import { UserCreditService } from '../user.credit/user.credit.service';
 
 @Injectable()
 export class OperationService {
   constructor(
     @InjectRepository(Operation)
     private operationRepository: Repository<Operation>,
+    private recordService: RecordService,
+    private userCreditService: UserCreditService,
   ) {}
 
-  async save(): Promise<Operation> {
-    const operation = new Operation(OperationType.addition, 0);
-    return await this.operationRepository.save(operation);
+  async operation(operationRequest: OperationRequest): Promise<number> {
+    const operation = await this.operationRepository.findOneBy({
+      type: operationRequest.operationId,
+    });
+
+    const user = new User();
+    user.id = 1;
+    let request, response;
+
+    switch (operationRequest.operationId) {
+      case OperationType.addition: {
+        request = `${operationRequest.number1} + ${operationRequest.number2}`;
+        response = operationRequest.number1 + operationRequest.number2;
+        break;
+      }
+      case OperationType.subtraction: {
+        request = `${operationRequest.number1} - ${operationRequest.number2}`;
+        response = operationRequest.number1 - operationRequest.number2;
+        break;
+      }
+      case OperationType.multiplication: {
+        request = `${operationRequest.number1} x ${operationRequest.number2}`;
+        response = operationRequest.number1 * operationRequest.number2;
+        break;
+      }
+      case OperationType.division: {
+        request = `${operationRequest.number1} ÷ ${operationRequest.number2}`;
+        response = operationRequest.number1 / operationRequest.number2;
+        break;
+      }
+    }
+
+    const record = new Record(
+      operation,
+      user,
+      operation.cost,
+      request,
+      response,
+    );
+
+    await this.recordService.save(record);
+    await this.userCreditService.decreaseUserCredit(user, operation.cost);
+
+    return response;
   }
 
-  findAll(): Promise<Operation[]> {
-    return this.operationRepository.find();
+  async squareRoot(
+    squareRootOperationRequest: SquareRootOperationRequest,
+  ): Promise<number> {
+    const operation = await this.operationRepository.findOneBy({
+      type: OperationType.square_root,
+    });
+
+    const user = new User();
+    user.id = 1;
+    let response;
+
+    if (squareRootOperationRequest.number < 0) {
+      response = 'We cannot find the square root of a negative number';
+    } else {
+      response = Math.sqrt(squareRootOperationRequest.number);
+    }
+
+    const record = new Record(
+      operation,
+      user,
+      operation.cost,
+      `Square root of ${squareRootOperationRequest.number}`,
+      response,
+    );
+
+    await this.recordService.save(record);
+    await this.userCreditService.decreaseUserCredit(user, operation.cost);
+
+    return response;
   }
 
-  findOne(id: number): Promise<Operation | null> {
-    return this.operationRepository.findOneBy({ id });
-  }
+  async randomString(): Promise<string> {
+    const operation = await this.operationRepository.findOneBy({
+      type: OperationType.square_root,
+    });
 
-  async remove(id: number): Promise<void> {
-    await this.operationRepository.delete(id);
+    const user = new User();
+    user.id = 1;
+
+    const response = 'We will get a random string from a external service';
+
+    const record = new Record(
+      operation,
+      user,
+      operation.cost,
+      `Random string`,
+      response,
+    );
+
+    await this.recordService.save(record);
+    await this.userCreditService.decreaseUserCredit(user, operation.cost);
+
+    return response;
   }
 }

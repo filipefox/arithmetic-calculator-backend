@@ -9,6 +9,9 @@ import { UserModule } from './user/user.module';
 import { RecordModule } from './record/record.module';
 import { ConfigModule } from '@nestjs/config';
 import * as process from 'process';
+import { User } from './user/user.entity';
+import { Record } from './record/record.entity';
+import { UserCredit } from './user.credit/user.credit.entity';
 
 @Module({
   imports: [
@@ -20,8 +23,8 @@ import * as process from 'process';
       username: process.env.PGUSER,
       password: process.env.PGPASSWORD,
       database: process.env.PGDATABASE,
-      entities: [Operation],
-      synchronize: Boolean(process.env.TYPE_ORM_SYNCHRONIZE),
+      synchronize: Boolean(process.env.TYPE_ORM_SYNCHRONIZE) || false,
+      entities: [User, Operation, Record, UserCredit],
     }),
     OperationModule,
     UserModule,

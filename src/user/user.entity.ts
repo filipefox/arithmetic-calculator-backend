@@ -1,27 +1,21 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class User {
-  constructor(type: UserType, cost: number) {
-    this.type = type;
-    this.cost = cost;
-  }
-
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  type: UserType;
+  username: string;
 
   @Column()
-  cost: number;
+  password: string;
+
+  @Column()
+  status: UserStatus;
 }
 
-export enum UserType {
-  addition,
-  subtraction,
-  multiplication,
-  division,
-  square_root,
-  random_string,
+export enum UserStatus {
+  active,
+  inactive,
 }

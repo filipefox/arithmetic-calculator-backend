@@ -1,7 +1,9 @@
-import { OperationType } from './operation.entity';
-
-export class OperationRequest {
+export interface OperationRequest {
   number1: number;
   number2: number;
-  type: OperationType;
+  operationId: number;
+}
+
+export class SquareRootOperationRequest {
+  number: number;
 }

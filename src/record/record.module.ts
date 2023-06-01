@@ -8,5 +8,6 @@ import { RecordService } from './record.service';
   imports: [TypeOrmModule.forFeature([Record])],
   providers: [RecordService],
   controllers: [RecordController],
+  exports: [RecordService],
 })
 export class RecordModule {}
