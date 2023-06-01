@@ -1,14 +1,17 @@
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { Operation, OperationType } from "./operation.entity";
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Operation, OperationType } from './operation.entity';
 
 @Injectable()
 export class OperationService {
-  constructor(@InjectRepository(Operation) private operationRepository: Repository<Operation>) {}
+  constructor(
+    @InjectRepository(Operation)
+    private operationRepository: Repository<Operation>,
+  ) {}
 
   async save(): Promise<Operation> {
-    const operation = new Operation(OperationType.addition, 0)
+    const operation = new Operation(OperationType.addition, 0);
     return await this.operationRepository.save(operation);
   }
 

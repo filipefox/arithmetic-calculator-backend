@@ -1,14 +1,16 @@
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { Record, RecordType } from "./record.entity";
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Record, RecordType } from './record.entity';
 
 @Injectable()
 export class RecordService {
-  constructor(@InjectRepository(Record) private recordRepository: Repository<Record>) {}
+  constructor(
+    @InjectRepository(Record) private recordRepository: Repository<Record>,
+  ) {}
 
   async save(): Promise<Record> {
-    const record = new Record(RecordType.addition, 0)
+    const record = new Record(RecordType.addition, 0);
     return await this.recordRepository.save(record);
   }
 

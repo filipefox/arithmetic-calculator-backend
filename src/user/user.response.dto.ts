@@ -1,4 +1,4 @@
-import { UserType } from "./user.entity";
+import { UserType } from './user.entity';
 
 export class UserResponse {
   number1: number;

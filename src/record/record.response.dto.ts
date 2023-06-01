@@ -1,4 +1,4 @@
-import { RecordType } from "./record.entity";
+import { RecordType } from './record.entity';
 
 export class RecordResponse {
   number1: number;

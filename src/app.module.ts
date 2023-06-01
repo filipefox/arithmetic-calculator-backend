@@ -3,14 +3,14 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { OperationController } from './operation/operation.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Operation } from "./operation/operation.entity";
-import { DataSource } from "typeorm";
-import { OperationService } from "./operation/operation.service";
-import { OperationModule } from "./operation/operation.module";
+import { Operation } from './operation/operation.entity';
+import { DataSource } from 'typeorm';
+import { OperationService } from './operation/operation.service';
+import { OperationModule } from './operation/operation.module';
 import { UserModule } from './user/user.module';
-import { RecordModule } from "./record/record.module";
-import { ConfigModule } from "@nestjs/config";
-import * as process from "process";
+import { RecordModule } from './record/record.module';
+import { ConfigModule } from '@nestjs/config';
+import * as process from 'process';
 
 @Module({
   imports: [
@@ -27,12 +27,11 @@ import * as process from "process";
     }),
     OperationModule,
     UserModule,
-    RecordModule
+    RecordModule,
   ],
   controllers: [AppController],
-  providers: [AppService]
+  providers: [AppService],
 })
-
 export class AppModule {
   constructor(private dataSource: DataSource) {}
 }

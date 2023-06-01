@@ -1,4 +1,4 @@
-import { OperationType } from "./operation.entity";
+import { OperationType } from './operation.entity';
 
 export class OperationResponse {
   number1: number;
