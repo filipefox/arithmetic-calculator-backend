@@ -17,7 +17,9 @@ export class RecordService {
     return this.recordRepository.find();
   }
 
-  async remove(id: number): Promise<void> {
-    await this.recordRepository.delete(id);
+  async deleteById(id: number): Promise<void> {
+    const record = await this.recordRepository.findOneBy({ id: id });
+    record.deleted = true;
+    await this.recordRepository.save(record);
   }
 }

@@ -9,20 +9,7 @@ export class UserService {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
-  async save(): Promise<User> {
-    const user = new User();
-    return await this.userRepository.save(user);
-  }
-
-  findAll(): Promise<User[]> {
-    return this.userRepository.find();
-  }
-
-  findOne(id: number): Promise<User | null> {
-    return this.userRepository.findOneBy({ id });
-  }
-
-  async remove(id: number): Promise<void> {
-    await this.userRepository.delete(id);
+  findByUsername(username: string): Promise<User | null> {
+    return this.userRepository.findOneBy({ username: username });
   }
 }

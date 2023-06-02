@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Operation } from './operation/operation.entity';
 import { DataSource } from 'typeorm';
@@ -12,6 +10,8 @@ import * as process from 'process';
 import { User } from './user/user.entity';
 import { Record } from './record/record.entity';
 import { UserCredit } from './user.credit/user.credit.entity';
+import { AuthModule } from './auth/auth.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -26,12 +26,16 @@ import { UserCredit } from './user.credit/user.credit.entity';
       synchronize: Boolean(process.env.TYPE_ORM_SYNCHRONIZE) || false,
       entities: [User, Operation, Record, UserCredit],
     }),
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: '300s' },
+    }),
     OperationModule,
     UserModule,
     RecordModule,
+    AuthModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}
