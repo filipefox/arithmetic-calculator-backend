@@ -16,18 +16,25 @@ export class RecordService {
     return await this.recordRepository.save(record);
   }
 
-  findAll(): Promise<Record[]> {
-    return this.recordRepository.findBy({
-      user: this.authService.getCurrentUser(),
+  async findAll(page: number, perPage: number, sortBy: string) {
+    const skip = (page - 1) * perPage;
+    const take = perPage;
+    const order = { [sortBy]: 'ASC' };
+
+    const [records, count] = await this.recordRepository.findAndCount({
+      where: { user: this.authService.getCurrentUser() },
+      skip,
+      take,
+      order,
     });
+
+    return { records: records, count: count };
   }
 
   async deleteById(id: number): Promise<void> {
-    const record = await this.recordRepository.findOneBy({
+    await this.recordRepository.softDelete({
       id: id,
       user: this.authService.getCurrentUser(),
     });
-    record.deleted = true;
-    await this.recordRepository.save(record);
   }
 }

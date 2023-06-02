@@ -1,4 +1,10 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  DeleteDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Operation } from '../operation/operation.entity';
 import { User } from '../user/user.entity';
 
@@ -18,8 +24,8 @@ export class Record {
   response: string;
   @Column()
   dateTime: Date = new Date();
-  @Column({ default: false })
-  deleted: boolean;
+  @DeleteDateColumn()
+  deletedAt?: Date;
 
   constructor(
     operation: Operation,

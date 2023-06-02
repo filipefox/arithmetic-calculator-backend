@@ -1,4 +1,11 @@
-import { Controller, Delete, Get, Param, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { RecordService } from './record.service';
 import { AuthGuard } from '../auth/auth.guard';
 
@@ -8,8 +15,12 @@ export class RecordController {
   constructor(private recordService: RecordService) {}
 
   @Get()
-  async findAll() {
-    return await this.recordService.findAll();
+  async findAll(
+    @Query('page') page: number,
+    @Query('perPage') perPage: number,
+    @Query('sortBy') sortBy: string,
+  ) {
+    return await this.recordService.findAll(page, perPage, sortBy);
   }
 
   @Delete(':id')
