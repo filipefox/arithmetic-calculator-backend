@@ -52,7 +52,7 @@ export class OperationService {
     const record = new Record(operation, operation.cost, request, response);
 
     await this.recordService.save(record);
-    await this.userCreditService.decreaseUserCredit(operation.cost);
+    await this.userCreditService.decreaseCredits(operation.cost);
 
     return response;
   }
@@ -80,7 +80,7 @@ export class OperationService {
     );
 
     await this.recordService.save(record);
-    await this.userCreditService.decreaseUserCredit(operation.cost);
+    await this.userCreditService.decreaseCredits(operation.cost);
 
     return response;
   }
@@ -100,7 +100,7 @@ export class OperationService {
     );
 
     await this.recordService.save(record);
-    await this.userCreditService.decreaseUserCredit(operation.cost);
+    await this.userCreditService.decreaseCredits(operation.cost);
 
     return response;
   }

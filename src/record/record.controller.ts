@@ -2,7 +2,7 @@ import { Controller, Delete, Get, Param, UseGuards } from '@nestjs/common';
 import { RecordService } from './record.service';
 import { AuthGuard } from '../auth/auth.guard';
 
-@Controller('records')
+@Controller({ path: 'records', version: '1' })
 @UseGuards(AuthGuard)
 export class RecordController {
   constructor(private recordService: RecordService) {}

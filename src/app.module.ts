@@ -12,6 +12,7 @@ import { Record } from './record/record.entity';
 import { UserCredit } from './user.credit/user.credit.entity';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
+import { UserCreditModule } from './user.credit/user.credit.module';
 
 @Module({
   imports: [
@@ -23,9 +24,8 @@ import { JwtModule } from '@nestjs/jwt';
       username: process.env.PGUSER,
       password: process.env.PGPASSWORD,
       database: process.env.PGDATABASE,
-      synchronize: Boolean(process.env.TYPE_ORM_SYNCHRONIZE) || false,
+      synchronize: Boolean(process.env.TYPE_ORM_SYNCHRONIZE),
       entities: [User, Operation, Record, UserCredit],
-      logging: Boolean(process.env.TYPE_ORM_LOGGING) || false,
     }),
     JwtModule.register({
       global: true,
@@ -36,6 +36,7 @@ import { JwtModule } from '@nestjs/jwt';
     UserModule,
     RecordModule,
     AuthModule,
+    UserCreditModule,
   ],
 })
 export class AppModule {

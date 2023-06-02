@@ -5,6 +5,7 @@ import * as process from 'process';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableVersioning();
 
   const config = new DocumentBuilder()
     .setTitle('Arithmetic Calculator')

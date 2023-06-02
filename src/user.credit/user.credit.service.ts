@@ -12,12 +12,23 @@ export class UserCreditService {
     private authService: AuthService,
   ) {}
 
-  async decreaseUserCredit(amount: number): Promise<UserCredit> {
+  async getCredits(): Promise<number> {
     const user = this.authService.getCurrentUser();
     const userCredit = await this.userCreditRepository.findOneBy({
       user,
     });
-    userCredit.value -= amount;
+    return userCredit.value;
+  }
+
+  async decreaseCredits(amount: number): Promise<UserCredit> {
+    const user = this.authService.getCurrentUser();
+    const userCredit = await this.userCreditRepository.findOneBy({
+      user,
+    });
+
+    if (userCredit.value - amount >= 0) {
+      userCredit.value -= amount;
+    }
 
     return await this.userCreditRepository.save(userCredit);
   }
