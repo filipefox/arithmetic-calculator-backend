@@ -7,7 +7,6 @@ import {
   SquareRootOperationRequest,
 } from './operation.request.dto';
 import { Record } from '../record/record.entity';
-import { User } from '../user/user.entity';
 import { RecordService } from '../record/record.service';
 import { UserCreditService } from '../user.credit/user.credit.service';
 
@@ -25,8 +24,6 @@ export class OperationService {
       type: operationRequest.operationId,
     });
 
-    const user = new User();
-    user.id = 1;
     let request, response;
 
     switch (operationRequest.operationId) {
@@ -52,16 +49,10 @@ export class OperationService {
       }
     }
 
-    const record = new Record(
-      operation,
-      user,
-      operation.cost,
-      request,
-      response,
-    );
+    const record = new Record(operation, operation.cost, request, response);
 
     await this.recordService.save(record);
-    await this.userCreditService.decreaseUserCredit(user, operation.cost);
+    await this.userCreditService.decreaseUserCredit(operation.cost);
 
     return response;
   }
@@ -73,8 +64,6 @@ export class OperationService {
       type: OperationType.square_root,
     });
 
-    const user = new User();
-    user.id = 1;
     let response;
 
     if (squareRootOperationRequest.number < 0) {
@@ -85,14 +74,13 @@ export class OperationService {
 
     const record = new Record(
       operation,
-      user,
       operation.cost,
       `Square root of ${squareRootOperationRequest.number}`,
       response,
     );
 
     await this.recordService.save(record);
-    await this.userCreditService.decreaseUserCredit(user, operation.cost);
+    await this.userCreditService.decreaseUserCredit(operation.cost);
 
     return response;
   }
@@ -102,21 +90,17 @@ export class OperationService {
       type: OperationType.square_root,
     });
 
-    const user = new User();
-    user.id = 1;
-
     const response = 'We will get a random string from a external service';
 
     const record = new Record(
       operation,
-      user,
       operation.cost,
       `Random string`,
       response,
     );
 
     await this.recordService.save(record);
-    await this.userCreditService.decreaseUserCredit(user, operation.cost);
+    await this.userCreditService.decreaseUserCredit(operation.cost);
 
     return response;
   }

@@ -25,11 +25,12 @@ import { JwtModule } from '@nestjs/jwt';
       database: process.env.PGDATABASE,
       synchronize: Boolean(process.env.TYPE_ORM_SYNCHRONIZE) || false,
       entities: [User, Operation, Record, UserCredit],
+      logging: Boolean(process.env.TYPE_ORM_LOGGING) || false,
     }),
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '300s' },
+      signOptions: { expiresIn: process.env.JWT_EXPIRES_IN },
     }),
     OperationModule,
     UserModule,

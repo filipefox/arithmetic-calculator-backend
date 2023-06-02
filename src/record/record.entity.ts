@@ -23,13 +23,11 @@ export class Record {
 
   constructor(
     operation: Operation,
-    user: User,
     costInCredits: number,
     request: string,
     response: string,
   ) {
     this.operation = operation;
-    this.user = user;
     this.costInCredits = costInCredits;
     this.request = request;
     this.response = response;
