@@ -17,10 +17,16 @@ export class RecordController {
   @Get()
   async findAll(
     @Query('page') page: number,
-    @Query('perPage') perPage: number,
+    @Query('rowsPerPage') rowsPerPage: number,
     @Query('sortBy') sortBy: string,
+    @Query('descending') descending: string,
   ) {
-    return await this.recordService.findAll(page, perPage, sortBy);
+    return await this.recordService.findAll(
+      page,
+      rowsPerPage,
+      sortBy,
+      descending,
+    );
   }
 
   @Delete(':id')

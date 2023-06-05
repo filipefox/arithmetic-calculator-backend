@@ -2,13 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Operation, OperationType } from './operation.entity';
-import {
-  OperationRequest,
-  SquareRootOperationRequest,
-} from './operation.request.dto';
+import { OperationRequest } from './operation.request.dto';
 import { Record } from '../record/record.entity';
 import { RecordService } from '../record/record.service';
 import { UserCreditService } from '../user.credit/user.credit.service';
+import { HttpService } from '@nestjs/axios';
+import { RandomOrgService } from '../random/random-org.service';
 
 @Injectable()
 export class OperationService {
@@ -17,6 +16,7 @@ export class OperationService {
     private operationRepository: Repository<Operation>,
     private recordService: RecordService,
     private userCreditService: UserCreditService,
+    private randomOrgService: RandomOrgService,
   ) {}
 
   async operation(operationRequest: OperationRequest): Promise<number> {
@@ -47,57 +47,19 @@ export class OperationService {
         response = operationRequest.number1 / operationRequest.number2;
         break;
       }
+      case OperationType.square_root: {
+        request = `Square root of ${operationRequest.number1}`;
+        response = Math.sqrt(operationRequest.number1);
+        break;
+      }
+      case OperationType.random_string: {
+        request = `Random string`;
+        response = await this.randomOrgService.getRandomString();
+        break;
+      }
     }
 
     const record = new Record(operation, operation.cost, request, response);
-
-    await this.recordService.save(record);
-    await this.userCreditService.decreaseCredits(operation.cost);
-
-    return response;
-  }
-
-  async squareRoot(
-    squareRootOperationRequest: SquareRootOperationRequest,
-  ): Promise<number> {
-    const operation = await this.operationRepository.findOneBy({
-      type: OperationType.square_root,
-    });
-
-    let response;
-
-    if (squareRootOperationRequest.number < 0) {
-      response = 'We cannot find the square root of a negative number';
-    } else {
-      response = Math.sqrt(squareRootOperationRequest.number);
-    }
-
-    const record = new Record(
-      operation,
-      operation.cost,
-      `Square root of ${squareRootOperationRequest.number}`,
-      response,
-    );
-
-    await this.recordService.save(record);
-    await this.userCreditService.decreaseCredits(operation.cost);
-
-    return response;
-  }
-
-  async randomString(): Promise<string> {
-    const operation = await this.operationRepository.findOneBy({
-      type: OperationType.square_root,
-    });
-
-    const response = 'We will get a random string from a external service';
-
-    const record = new Record(
-      operation,
-      operation.cost,
-      `Random string`,
-      response,
-    );
 
     await this.recordService.save(record);
     await this.userCreditService.decreaseCredits(operation.cost);

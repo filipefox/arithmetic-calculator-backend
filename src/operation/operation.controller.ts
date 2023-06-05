@@ -17,20 +17,4 @@ export class OperationController {
     const result = await this.operationService.operation(operationRequest);
     return new OperationResponse(result.toString());
   }
-
-  @Post('/squareRoot')
-  async squareRoot(
-    @Body() squareRootOperationRequest: SquareRootOperationRequest,
-  ) {
-    const result = await this.operationService.squareRoot(
-      squareRootOperationRequest,
-    );
-    return new OperationResponse(result.toString());
-  }
-
-  @Post('/randomString')
-  async randomString() {
-    const result = await this.operationService.randomString();
-    return new OperationResponse(result);
-  }
 }

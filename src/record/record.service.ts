@@ -16,19 +16,23 @@ export class RecordService {
     return await this.recordRepository.save(record);
   }
 
-  async findAll(page: number, perPage: number, sortBy: string) {
-    const skip = (page - 1) * perPage;
-    const take = perPage;
-    const order = { [sortBy]: 'ASC' };
+  async findAll(
+    page: number,
+    rowsPerPage: number,
+    sortBy: string,
+    descending: string,
+  ) {
+    const skip = (page - 1) * rowsPerPage;
+    const [records, numberOfRecords] = await this.recordRepository.findAndCount(
+      {
+        where: { user: this.authService.getCurrentUser() },
+        take: rowsPerPage,
+        skip: skip,
+        order: { [sortBy]: descending },
+      },
+    );
 
-    const [records, count] = await this.recordRepository.findAndCount({
-      where: { user: this.authService.getCurrentUser() },
-      skip,
-      take,
-      order,
-    });
-
-    return { records: records, count: count };
+    return { rows: records, rowsNumber: numberOfRecords };
   }
 
   async deleteById(id: number): Promise<void> {
