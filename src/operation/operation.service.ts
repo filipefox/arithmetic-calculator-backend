@@ -44,12 +44,24 @@ export class OperationService {
       }
       case OperationType.division: {
         request = `${operationRequest.number1} ÷ ${operationRequest.number2}`;
-        response = operationRequest.number1 / operationRequest.number2;
+
+        if (operationRequest.number2 > 0) {
+          response = operationRequest.number1 / operationRequest.number2;
+        } else {
+          response = 'Cannot divide by zero';
+        }
+
         break;
       }
       case OperationType.square_root: {
         request = `Square root of ${operationRequest.number1}`;
-        response = Math.sqrt(operationRequest.number1);
+        if (operationRequest.number1 >= 0) {
+          response = Math.sqrt(operationRequest.number1);
+        } else {
+          response =
+            'Cannot extract square root of a negative number from the set of real numbers';
+        }
+
         break;
       }
       case OperationType.random_string: {
