@@ -31,8 +31,8 @@ export class UserCreditService {
       return await this.userCreditRepository.save(userCredit);
     }
 
-    throw new BadRequestException({
-      message: 'Not enough credits to carry out the operation',
-    });
+    throw new BadRequestException(
+      'Not enough credits to carry out the operation',
+    );
   }
 }
