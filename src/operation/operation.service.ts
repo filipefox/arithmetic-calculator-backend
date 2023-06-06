@@ -24,6 +24,8 @@ export class OperationService {
       type: operationRequest.operationId,
     });
 
+    await this.userCreditService.decreaseCredits(operation.cost);
+
     let request, response;
 
     switch (operationRequest.operationId) {
@@ -72,7 +74,6 @@ export class OperationService {
     }
 
     const record = new Record(operation, operation.cost, request, response);
-    await this.userCreditService.decreaseCredits(operation.cost);
     await this.recordService.save(record);
 
     return response;
