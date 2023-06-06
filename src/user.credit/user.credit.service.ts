@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserCredit } from './user.credit.entity';
@@ -28,8 +28,11 @@ export class UserCreditService {
 
     if (userCredit.value - amount >= 0) {
       userCredit.value -= amount;
+      return await this.userCreditRepository.save(userCredit);
     }
 
-    return await this.userCreditRepository.save(userCredit);
+    throw new BadRequestException({
+      message: 'Not enough credits to carry out the operation',
+    });
   }
 }

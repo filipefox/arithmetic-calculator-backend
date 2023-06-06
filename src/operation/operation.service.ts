@@ -72,9 +72,8 @@ export class OperationService {
     }
 
     const record = new Record(operation, operation.cost, request, response);
-
-    await this.recordService.save(record);
     await this.userCreditService.decreaseCredits(operation.cost);
+    await this.recordService.save(record);
 
     return response;
   }
