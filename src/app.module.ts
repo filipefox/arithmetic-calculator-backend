@@ -16,7 +16,7 @@ import { UserCreditModule } from './user.credit/user.credit.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ envFilePath: ['.env', '.env.local'] }),
+    ConfigModule.forRoot({ envFilePath: ['.env', '.env.development'] }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.PGHOST,

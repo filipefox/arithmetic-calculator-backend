@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Version } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
 @Controller({ path: 'auth', version: '1' })
