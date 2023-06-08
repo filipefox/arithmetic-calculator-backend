@@ -4,7 +4,6 @@ import { AuthService } from './auth.service';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { UserCredit } from '../user.credit/user.credit.entity';
 import { Repository } from 'typeorm';
 import { User } from '../user/user.entity';
 
@@ -27,8 +26,7 @@ describe('AuthController', () => {
     }).compile();
 
     authService = module.get<AuthService>(AuthService);
-    // controller = new AuthController(authService);
-    controller = module.get<AuthController>(AuthController);
+    controller = new AuthController(authService);
   });
 
   it('should be defined', () => {

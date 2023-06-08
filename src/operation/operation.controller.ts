@@ -1,8 +1,5 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
-import {
-  OperationRequest,
-  SquareRootOperationRequest,
-} from './operation.request.dto';
+import { OperationRequest } from './operation.request.dto';
 import { OperationService } from './operation.service';
 import { OperationResponse } from './operation.response.dto';
 import { AuthGuard } from '../auth/auth.guard';
