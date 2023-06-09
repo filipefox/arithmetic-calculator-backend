@@ -9,6 +9,11 @@ import {
 import { RecordService } from './record.service';
 import { AuthGuard } from '../auth/auth.guard';
 
+export class RecordResponse {
+  number1: number;
+  number2: number;
+}
+
 @Controller({ path: 'records', version: '1' })
 @UseGuards(AuthGuard)
 export class RecordController {

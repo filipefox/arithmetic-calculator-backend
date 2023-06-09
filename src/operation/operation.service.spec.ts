@@ -162,12 +162,58 @@ describe('OperationController', () => {
       expect(result).toEqual(expectedResponse);
     });
 
+    it('should perform division by zero and return the result', async () => {
+      const operationRequest = {
+        operationId: OperationType.division,
+        number1: 10,
+        number2: 0,
+      };
+      const expectedResponse = 'Cannot divide by zero';
+
+      const operation = new Operation();
+      operation.type = 3;
+      operation.cost = 4;
+
+      jest.spyOn(operationRepository, 'findOneBy').mockResolvedValue(operation);
+      jest.spyOn(userCreditService, 'decreaseCredits').mockImplementation();
+      jest.spyOn(recordService, 'save').mockImplementation();
+
+      const result = await service.operation(operationRequest);
+
+      expect(userCreditService.decreaseCredits).toHaveBeenCalledWith(4);
+      expect(recordService.save).toHaveBeenCalled();
+      expect(result).toEqual(expectedResponse);
+    });
+
     it('should perform square root and return the result', async () => {
       const operationRequest = {
         operationId: OperationType.square_root,
         number1: 16,
       };
       const expectedResponse = 4;
+
+      const operation = new Operation();
+      operation.type = 4;
+      operation.cost = 5;
+
+      jest.spyOn(operationRepository, 'findOneBy').mockResolvedValue(operation);
+      jest.spyOn(userCreditService, 'decreaseCredits').mockImplementation();
+      jest.spyOn(recordService, 'save').mockImplementation();
+
+      const result = await service.operation(operationRequest);
+
+      expect(userCreditService.decreaseCredits).toHaveBeenCalledWith(5);
+      expect(recordService.save).toHaveBeenCalled();
+      expect(result).toEqual(expectedResponse);
+    });
+
+    it('should perform square root with negative number and return the result', async () => {
+      const operationRequest = {
+        operationId: OperationType.square_root,
+        number1: -1,
+      };
+      const expectedResponse =
+        'Cannot extract square root of a negative number from the set of real numbers';
 
       const operation = new Operation();
       operation.type = 4;

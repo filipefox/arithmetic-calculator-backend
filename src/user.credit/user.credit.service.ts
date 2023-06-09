@@ -17,6 +17,7 @@ export class UserCreditService {
     const userCredit = await this.userCreditRepository.findOneBy({
       user,
     });
+
     return userCredit.value;
   }
 

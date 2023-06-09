@@ -57,6 +57,7 @@ export class OperationService {
       }
       case OperationType.square_root: {
         request = `Square root of ${operationRequest.number1}`;
+
         if (operationRequest.number1 >= 0) {
           response = Math.sqrt(operationRequest.number1);
         } else {
