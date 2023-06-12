@@ -88,7 +88,7 @@ $ npm run test:cov
 }
 ```
 #### Records
-* **GET** /v1/records?page=1&rowsPerPage=10&sortBy=id&descending=DESC or ASC
+* **GET** /v1/records?page=1&rowsPerPage=10&sortBy=id&order=DESC or ASC
 
 #### Delete record by ID (soft delete)
 * **DELETE** /v1/records/1

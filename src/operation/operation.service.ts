@@ -6,7 +6,6 @@ import { OperationRequest } from './operation.request.dto';
 import { Record } from '../record/record.entity';
 import { RecordService } from '../record/record.service';
 import { UserCreditService } from '../user.credit/user.credit.service';
-import { HttpService } from '@nestjs/axios';
 import { RandomOrgService } from '../random/random-org.service';
 
 @Injectable()

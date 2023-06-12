@@ -11,7 +11,7 @@ import { UserCreditService } from '../user.credit/user.credit.service';
 import { RandomOrgService } from '../random/random-org.service';
 import { AuthService } from '../auth/auth.service';
 import { Record } from '../record/record.entity';
-import { HttpModule, HttpService } from '@nestjs/axios';
+import { HttpModule } from '@nestjs/axios';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../user/user.entity';

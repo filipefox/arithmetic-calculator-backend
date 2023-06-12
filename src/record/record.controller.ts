@@ -24,14 +24,9 @@ export class RecordController {
     @Query('page') page: number,
     @Query('rowsPerPage') rowsPerPage: number,
     @Query('sortBy') sortBy: string,
-    @Query('descending') descending: string,
+    @Query('order') order: string,
   ) {
-    return await this.recordService.findAll(
-      page,
-      rowsPerPage,
-      sortBy,
-      descending,
-    );
+    return await this.recordService.findAll(page, rowsPerPage, sortBy, order);
   }
 
   @Delete(':id')

@@ -20,7 +20,7 @@ export class RecordService {
     page: number,
     rowsPerPage: number,
     sortBy: string,
-    descending: string,
+    order: string,
   ) {
     const skip = (page - 1) * rowsPerPage;
     const [records, numberOfRecords] = await this.recordRepository.findAndCount(
@@ -28,7 +28,7 @@ export class RecordService {
         where: { user: this.authService.getCurrentUser() },
         take: rowsPerPage,
         skip: skip,
-        order: { [sortBy]: descending },
+        order: { [sortBy]: order },
       },
     );
 

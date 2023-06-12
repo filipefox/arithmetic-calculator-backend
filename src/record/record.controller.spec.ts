@@ -3,7 +3,6 @@ import { RecordController } from './record.controller';
 import { Test } from '@nestjs/testing';
 import { AuthService } from '../auth/auth.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { UserCredit } from '../user.credit/user.credit.entity';
 import { Repository } from 'typeorm';
 import { Record } from './record.entity';
 import { UserService } from '../user/user.service';
@@ -41,23 +40,18 @@ describe('RecordController', () => {
     const page = 1;
     const rowsPerPage = 10;
     const sortBy = 'createdAt';
-    const descending = 'true';
-    const expectedResult = { rows: [], rowsNumber: 0 }; // Set expected result here
+    const order = 'ASC';
+    const expectedResult = { rows: [], rowsNumber: 0 };
 
     jest.spyOn(recordService, 'findAll').mockResolvedValue(expectedResult);
 
-    const result = await controller.findAll(
-      page,
-      rowsPerPage,
-      sortBy,
-      descending,
-    );
+    const result = await controller.findAll(page, rowsPerPage, sortBy, order);
 
     expect(recordService.findAll).toHaveBeenCalledWith(
       page,
       rowsPerPage,
       sortBy,
-      descending,
+      order,
     );
     expect(result).toEqual(expectedResult);
   });
