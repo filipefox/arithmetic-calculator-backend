@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { UserCredit } from './user.credit.entity';
 import { AuthService } from '../auth/auth.service';
 
@@ -21,7 +21,10 @@ export class UserCreditService {
     return userCredit.value;
   }
 
-  async decreaseCredits(amount: number): Promise<UserCredit> {
+  async decreaseCredits(
+    entityManager: EntityManager,
+    amount: number,
+  ): Promise<UserCredit> {
     const user = this.authService.getCurrentUser();
     const userCredit = await this.userCreditRepository.findOneBy({
       user,
@@ -29,7 +32,7 @@ export class UserCreditService {
 
     if (userCredit.value - amount >= 0) {
       userCredit.value -= amount;
-      return await this.userCreditRepository.save(userCredit);
+      return await entityManager.save(userCredit);
     }
 
     throw new BadRequestException(

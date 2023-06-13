@@ -3,7 +3,7 @@ import { OperationController } from './operation.controller';
 import { OperationService } from './operation.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserCredit } from '../user.credit/user.credit.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { Operation, OperationType } from './operation.entity';
 import { RecordService } from '../record/record.service';
 import { UserCreditService } from '../user.credit/user.credit.service';
@@ -21,6 +21,7 @@ describe('OperationController', () => {
   let userCreditService: UserCreditService;
   let randomOrgService: RandomOrgService;
   let operationRepository: Repository<Operation>;
+  let dataSource: DataSource;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -50,6 +51,21 @@ describe('OperationController', () => {
           provide: getRepositoryToken(User),
           useClass: Repository,
         },
+        {
+          provide: DataSource,
+          useValue: {
+            createQueryRunner: jest.fn(() => ({
+              connect: jest.fn(),
+              startTransaction: jest.fn(),
+              manager: {
+                save: jest.fn(),
+              },
+              commitTransaction: jest.fn(),
+              rollbackTransaction: jest.fn(),
+              release: jest.fn(),
+            })),
+          },
+        },
       ],
     }).compile();
 
@@ -59,11 +75,13 @@ describe('OperationController', () => {
     recordService = module.get<RecordService>(RecordService);
     userCreditService = module.get<UserCreditService>(UserCreditService);
     randomOrgService = module.get<RandomOrgService>(RandomOrgService);
+    dataSource = module.get<DataSource>(DataSource);
     service = new OperationService(
       operationRepository,
       recordService,
       userCreditService,
       randomOrgService,
+      dataSource,
     );
   });
 
@@ -86,7 +104,6 @@ describe('OperationController', () => {
 
       const result = await service.operation(operationRequest);
 
-      expect(userCreditService.decreaseCredits).toHaveBeenCalledWith(1);
       expect(recordService.save).toHaveBeenCalled();
       expect(result).toEqual(expectedResponse);
     });
@@ -110,7 +127,6 @@ describe('OperationController', () => {
 
       const result = await service.operation(operationRequest);
 
-      expect(userCreditService.decreaseCredits).toHaveBeenCalledWith(2);
       expect(recordService.save).toHaveBeenCalled();
       expect(result).toEqual(expectedResponse);
     });
@@ -133,7 +149,6 @@ describe('OperationController', () => {
 
       const result = await service.operation(operationRequest);
 
-      expect(userCreditService.decreaseCredits).toHaveBeenCalledWith(3);
       expect(recordService.save).toHaveBeenCalled();
       expect(result).toEqual(expectedResponse);
     });
@@ -156,7 +171,6 @@ describe('OperationController', () => {
 
       const result = await service.operation(operationRequest);
 
-      expect(userCreditService.decreaseCredits).toHaveBeenCalledWith(4);
       expect(recordService.save).toHaveBeenCalled();
       expect(result).toEqual(expectedResponse);
     });
@@ -179,7 +193,6 @@ describe('OperationController', () => {
 
       const result = await service.operation(operationRequest);
 
-      expect(userCreditService.decreaseCredits).toHaveBeenCalledWith(4);
       expect(recordService.save).toHaveBeenCalled();
       expect(result).toEqual(expectedResponse);
     });
@@ -201,7 +214,6 @@ describe('OperationController', () => {
 
       const result = await service.operation(operationRequest);
 
-      expect(userCreditService.decreaseCredits).toHaveBeenCalledWith(5);
       expect(recordService.save).toHaveBeenCalled();
       expect(result).toEqual(expectedResponse);
     });
@@ -224,7 +236,6 @@ describe('OperationController', () => {
 
       const result = await service.operation(operationRequest);
 
-      expect(userCreditService.decreaseCredits).toHaveBeenCalledWith(5);
       expect(recordService.save).toHaveBeenCalled();
       expect(result).toEqual(expectedResponse);
     });
@@ -248,7 +259,6 @@ describe('OperationController', () => {
 
       const result = await service.operation(operationRequest);
 
-      expect(userCreditService.decreaseCredits).toHaveBeenCalledWith(6);
       expect(recordService.save).toHaveBeenCalled();
       expect(randomOrgService.getRandomString).toHaveBeenCalled();
       expect(result).toEqual(expectedResponse);

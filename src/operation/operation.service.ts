@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { Operation, OperationType } from './operation.entity';
 import { OperationRequest } from './operation.request.dto';
 import { Record } from '../record/record.entity';
@@ -16,6 +16,7 @@ export class OperationService {
     private recordService: RecordService,
     private userCreditService: UserCreditService,
     private randomOrgService: RandomOrgService,
+    private dataSource: DataSource,
   ) {}
 
   async operation(operationRequest: OperationRequest): Promise<number> {
@@ -23,59 +24,77 @@ export class OperationService {
       type: operationRequest.operationId,
     });
 
-    await this.userCreditService.decreaseCredits(operation.cost);
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    const entityManager = queryRunner.manager;
 
-    let request, response;
+    try {
+      await this.userCreditService.decreaseCredits(
+        entityManager,
+        operation.cost,
+      );
 
-    switch (operationRequest.operationId) {
-      case OperationType.addition: {
-        request = `${operationRequest.number1} + ${operationRequest.number2}`;
-        response = operationRequest.number1 + operationRequest.number2;
-        break;
-      }
-      case OperationType.subtraction: {
-        request = `${operationRequest.number1} - ${operationRequest.number2}`;
-        response = operationRequest.number1 - operationRequest.number2;
-        break;
-      }
-      case OperationType.multiplication: {
-        request = `${operationRequest.number1} x ${operationRequest.number2}`;
-        response = operationRequest.number1 * operationRequest.number2;
-        break;
-      }
-      case OperationType.division: {
-        request = `${operationRequest.number1} ÷ ${operationRequest.number2}`;
+      let request, response;
 
-        if (operationRequest.number2 > 0) {
-          response = operationRequest.number1 / operationRequest.number2;
-        } else {
-          response = 'Cannot divide by zero';
+      switch (operationRequest.operationId) {
+        case OperationType.addition: {
+          request = `${operationRequest.number1} + ${operationRequest.number2}`;
+          response = operationRequest.number1 + operationRequest.number2;
+          break;
         }
-
-        break;
-      }
-      case OperationType.square_root: {
-        request = `Square root of ${operationRequest.number1}`;
-
-        if (operationRequest.number1 >= 0) {
-          response = Math.sqrt(operationRequest.number1);
-        } else {
-          response =
-            'Cannot extract square root of a negative number from the set of real numbers';
+        case OperationType.subtraction: {
+          request = `${operationRequest.number1} - ${operationRequest.number2}`;
+          response = operationRequest.number1 - operationRequest.number2;
+          break;
         }
+        case OperationType.multiplication: {
+          request = `${operationRequest.number1} x ${operationRequest.number2}`;
+          response = operationRequest.number1 * operationRequest.number2;
+          break;
+        }
+        case OperationType.division: {
+          request = `${operationRequest.number1} ÷ ${operationRequest.number2}`;
 
-        break;
+          if (operationRequest.number2 > 0) {
+            response = operationRequest.number1 / operationRequest.number2;
+          } else {
+            response = 'Cannot divide by zero';
+          }
+
+          break;
+        }
+        case OperationType.square_root: {
+          request = `Square root of ${operationRequest.number1}`;
+
+          if (operationRequest.number1 >= 0) {
+            response = Math.sqrt(operationRequest.number1);
+          } else {
+            response =
+              'Cannot extract square root of a negative number from the set of real numbers';
+          }
+
+          break;
+        }
+        case OperationType.random_string: {
+          request = `Random string`;
+          response = await this.randomOrgService.getRandomString();
+          break;
+        }
       }
-      case OperationType.random_string: {
-        request = `Random string`;
-        response = await this.randomOrgService.getRandomString();
-        break;
-      }
+
+      const record = new Record(operation, operation.cost, request, response);
+      await this.recordService.save(record);
+      await queryRunner.commitTransaction();
+      return response;
+    } catch (e) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
     }
 
-    const record = new Record(operation, operation.cost, request, response);
-    await this.recordService.save(record);
-
-    return response;
+    throw new InternalServerErrorException(
+      'The operation cannot be performed. Your credits have not been consumed.',
+    );
   }
 }

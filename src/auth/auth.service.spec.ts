@@ -42,9 +42,11 @@ describe('AuthService', () => {
     it('should return an access token if login is successful', async () => {
       const username = 'foo@bar.com';
       const password = 'foobar';
+      const hashedPassword =
+        '$2b$04$frBHr.MdAn144qFHYCKAhevpqF6yvUE2N1SVclOye7MD7/geWClHW';
       const user = new User(1);
       user.username = username;
-      user.password = password;
+      user.password = hashedPassword;
       const expectedAccessToken = 'mocked_token';
 
       jest.spyOn(userService, 'findByUsername').mockResolvedValue(user);

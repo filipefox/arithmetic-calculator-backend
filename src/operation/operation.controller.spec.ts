@@ -4,7 +4,7 @@ import { OperationService } from './operation.service';
 import { OperationRequest } from './operation.request.dto';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserCredit } from '../user.credit/user.credit.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { Operation } from './operation.entity';
 import { RecordService } from '../record/record.service';
 import { UserCreditService } from '../user.credit/user.credit.service';
@@ -47,6 +47,21 @@ describe('OperationController', () => {
         {
           provide: getRepositoryToken(User),
           useClass: Repository,
+        },
+        {
+          provide: DataSource,
+          useValue: {
+            createQueryRunner: jest.fn(() => ({
+              connect: jest.fn(),
+              startTransaction: jest.fn(),
+              manager: {
+                save: jest.fn(),
+              },
+              commitTransaction: jest.fn(),
+              rollbackTransaction: jest.fn(),
+              release: jest.fn(),
+            })),
+          },
         },
       ],
     }).compile();
